@@ -29,7 +29,6 @@ const snow = require("../assets/images/snow.png");
 const mist = require("../assets/images/mist.png");
 const close = require("../assets/icons/close.png");
 
-// const details=require("../assets/images/details.png")
 
 
 
