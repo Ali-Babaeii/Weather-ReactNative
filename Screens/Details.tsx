@@ -6,7 +6,6 @@ import {
   Image,
   TouchableOpacity,
   FlatList,
-  ImageBackground,
 } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { setFalse } from "../redux/actions";
