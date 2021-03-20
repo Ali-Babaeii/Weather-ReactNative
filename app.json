@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "WeatherReport",
-    "slug": "WeatherReport",
+    "name": "Weather",
+    "slug": "Weather",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -21,12 +21,15 @@
     },
     "android": {
       "adaptiveIcon": {
+        "package": "com.ali.babaei.Weather",
+  
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
       }
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "description": ""
   }
 }
