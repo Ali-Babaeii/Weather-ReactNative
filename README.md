@@ -16,7 +16,7 @@ Need Expo to run this app.
 - ESlint - Linter
 - Prettier - Code Formatter
 - Styled-Components - Styles
-- 
+
 # Contact
 - [LinkedIn](https://www.linkedin.com/in/ali-babaei-709684167)
 
