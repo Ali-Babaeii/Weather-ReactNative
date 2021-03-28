@@ -8,6 +8,15 @@ Need Expo to run this app.
 - Daily forecast for 7 days
 - Hourly forecast for 48 hours
 
+# Built With
+- React-Native - Build the native app using JavaScript
+- Redux - React State Manager
+- Redux-Thunk - Side-Effect model for Redux
+- PlaceInput - fetching places
+- ESlint - Linter
+- Prettier - Code Formatter
+- Styled-Components - Styles
+- 
 # Contact
 - [LinkedIn](https://www.linkedin.com/in/ali-babaei-709684167)
 
