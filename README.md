@@ -3,6 +3,8 @@ This is react-native base application which fetch weather using open weather api
 
 Need Expo to run this app.
 
+(https://github.com/ali-babaei69/Weather/Screenshots/1)
+
 # Features
 - Search for favorite cities
 - Daily forecast for 7 days
