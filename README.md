@@ -5,6 +5,6 @@ Need Expo to run this app.
 
 
 # Contact
-[Linkedin](https://www.linkedin.com/in/ali-babaei-709684167)
+-[LinkedIn](https://www.linkedin.com/in/ali-babaei-709684167)
 
-[Email](ali.babaei69@yahoo.com)
+-[E-mail](ali.babaei69@yahoo.com)
