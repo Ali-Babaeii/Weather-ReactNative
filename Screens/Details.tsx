@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect } from "react";
+
 import {
   Text,
   View,
@@ -6,11 +7,10 @@ import {
   Image,
   TouchableOpacity,
   FlatList,
-  TouchableHighlight,
-  Keyboard
 } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { setFalse } from "../redux/actions";
+import { colors } from "../constants/Theme";
 
 const clearDay1 = require("../assets/detailsImages/clearDay.png");
 const clearNight1 = require("../assets/detailsImages/clearNight.png");
@@ -23,6 +23,9 @@ const rainNight1 = require("../assets/detailsImages/rainNight.png");
 const thunderstorm1 = require("../assets/detailsImages/thunderstorm.png");
 const snow1 = require("../assets/detailsImages/snow.png");
 const mist1 = require("../assets/detailsImages/mist.png");
+const umbrella = require("../assets/icons/umbrella.png");
+const coupleUmbrella= require("../assets/icons/raining.png");
+
 
 const clearDay = require("../assets/images/clearDay.png");
 const clearNight = require("../assets/images/clearNight.png");
@@ -39,16 +42,21 @@ const close = require("../assets/icons/close.png");
 
 export default function Details() {
   const data = useSelector((state) => state.fetchDataReducer.data);
+  const currentDay = useSelector(
+    (state) => state.modalStatusReducer.currentDay
+  );
+
   const dispatch = useDispatch();
   const currentConditions = data.current;
   const minTemps = data.daily[0].temp.min;
   const maxTemps = data.daily[0].temp.max;
   const nextTemps = data.hourly.map((item) => item.temp);
-  const id = data.hourly.map((item) => item.dt);
+  const id = data.hourly.map((item) => item);
   const nextIcons = data.hourly.map((item) => item.weather[0].icon);
   const nextHours = data.hourly.map(
     (item) => new Date(item.dt * 1000).getHours() + ":00"
   );
+
   const setIcon = (iconAddress) => {
     switch (iconAddress) {
       case "01d":
@@ -121,173 +129,132 @@ export default function Details() {
     }
   };
 
-  const currentDay = new Date();
-  let weekday = [
-    "Sunday",
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-  ][currentDay.getDay()];
-  const Data = [
-    {
-      title: weekday,
-      date: currentDay.getHours() + ":" + "00",
-      time: "40&#xb0;",
-      id: 0,
-    },
-    {
-      title: "one",
-      date: currentDay.getHours() + ":" + "00",
-      time: "40&#xb0;",
-      id: 1,
-    },
-    {
-      title: "one",
-      date: currentDay.getHours() + ":" + "00",
-      time: "40&#xb0;",
-      id: 2,
-    },
-    {
-      title: "one",
-      date: currentDay.getHours() + ":" + "00",
-      time: "40&#xb0;",
-      id: 3,
-    },
-    {
-      title: "one",
-      date: currentDay.getHours() + ":" + "00",
-      time: "40&#xb0;",
-      id: 4,
-    },
-    {
-      title: "one",
-      date: currentDay.getHours() + ":" + "00",
-      time: "40&#xb0;",
-      id: 5,
-    },
-  ];
-
   const mathRound = (Num) => {
     return Math.round(Num);
   };
 
   const renderItem = ({ item, index }) => (
-    <View style={{ padding: 20, alignItems: "center" }}>
-      <Text>{nextHours[index]}</Text>
+    <View style={styles.nextHoursContainer}>
+      <Text style={{fontSize:16}}>{nextHours[index]}</Text>
       <Image
-        style={{ height: 38, width: 38, marginVertical: 8 }}
+        style={styles.nextHoursIcons}
         source={setCardIcon(nextIcons[index])}
       ></Image>
-      <Text style={{ marginTop: 4 }}>{mathRound(nextTemps[index])}&#xb0;</Text>
+      <Text style={styles.nextTempsText}>{mathRound(nextTemps[index])}&#xb0;</Text>
     </View>
   );
   return (
-    <View style={styles.container}>
-      {/* <ImageBackground
- style={{width:'100%',height:'100%',marginTop:94,flex:1,borderRadius:24}}
-     resizeMode={"contain"}
-     source={details}
-> */}
       <View
-        style={{
-          flex: 1,
-          alignItems: "center",
-          justifyContent: "center",
-          width: "100%",
-          backgroundColor: "#5D50FE",
-          borderTopLeftRadius: 38,
-          borderTopRightRadius: 38,
-        }}
+        style={styles.mainContainer}
       >
-        <TouchableOpacity
-          style={{
-            backgroundColor: "white",
-            padding: 10,
-            top: -18,
-            position: "absolute",
-            borderRadius: 50,
-          }}
-          onPress={
-            () =>
-              // console.log(nextIcons[0])
-              dispatch(setFalse())
-            // console.log(id)
-          }
-        >
-          <Image
-            style={{ width: 26, height: 26, alignSelf: "center" }}
-            source={close}
-          ></Image>
-        </TouchableOpacity>
-
-        <Text
-          style={{
-            color: "white",
-            fontSize: 38,
-            fontWeight: "bold",
-            marginTop: 18,
-          }}
-        >
-          Monday
-        </Text>
-        <Image
-          style={{ width: 100, height: 100, marginTop: 8 }}
-          source={setIcon(currentConditions.weather[0].icon)}
-        ></Image>
-        <Text style={{ color: "white", fontSize: 52, marginTop: 8 }}>
-          {mathRound(currentConditions.temp)}&#xb0;
-        </Text>
-
-        <Text>{useSelector((state) => state.modalStatus)}</Text>
-        <View style={{ flexDirection: "row", marginTop: 8 }}>
-          <Text
-            style={{
-              color: "white",
-              fontSize: 26,
-              fontWeight: "600",
-              paddingHorizontal: 44,
-            }}
-          >
-            {mathRound(minTemps)}&#xb0;
-          </Text>
-          <Text
-            style={{
-              color: "white",
-              fontSize: 26,
-              fontWeight: "600",
-              paddingHorizontal: 44,
-            }}
-          >
-            {mathRound(maxTemps)}&#xb0;
-          </Text>
-        </View>
-
         <View
-          style={{
-            backgroundColor: "white",
-            width: "90%",
-            borderRadius: 20,
-            marginTop: 32,
-            bottom: 16,
-          }}
+          style={styles.currentContainer}
+        >
+
+          <TouchableOpacity
+            style={styles.closeContainer}
+            onPress={() => dispatch(setFalse())}
+          >
+            <Image
+              style={styles.closeIcon}
+              source={close}
+            ></Image>
+          </TouchableOpacity>
+
+          <View style={styles.topContainer}>
+          <Image style={styles.topIcons} source={umbrella}></Image>
+          
+          <Text
+            style={styles.currentDayText}
+          >
+            {currentDay}
+          </Text>
+          <Image style={styles.topIcons} source={coupleUmbrella}></Image>
+          </View>
+
+          <Image
+            style={styles.currentDayIcon}
+            source={setIcon(currentConditions.weather[0].icon)}
+          ></Image>
+          <Text style={styles.currentDegreeText}>
+            {mathRound(currentConditions.temp)}&#xb0;
+          </Text>
+
+          <Text>{useSelector((state) => state.modalStatus)}</Text>
+          <View style={styles.minMaxContainer}>
+            <Text
+              style={styles.minText}
+            >
+              {mathRound(minTemps)}&#xb0;
+            </Text>
+            <Text
+              style={styles.minText}
+            >
+              {mathRound(maxTemps)}&#xb0;
+            </Text>
+          </View>
+        </View>
+        <View
+          style={styles.bottomContainer}
         >
           <FlatList
             horizontal
             data={id}
             renderItem={renderItem}
-            // keyExtractor={item => item.id.toString()}
-            keyExtractor={(item) => item.id}
+            keyExtractor={(item, index) => id[index].dt.toString()}
             showsHorizontalScrollIndicator={false}
           />
         </View>
       </View>
-    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, alignItems: "center", marginTop: 90 },
+  mainContainer: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    width: "100%",
+    backgroundColor: colors.secondary,
+    borderTopLeftRadius: 40,
+    borderTopRightRadius: 40,
+marginTop: 80
+  },
+  nextHoursContainer:{ padding: 20, alignItems: "center" },
+  nextHoursIcons:{ height: 44, width: 44, marginVertical: 8 },
+  currentContainer:{     flex: 1,
+    alignItems: "center",
+    justifyContent: "center",},
+    closeContainer:{
+      backgroundColor: "white",
+      padding: 10,
+      top: -18,
+      position: "absolute",
+      borderRadius: 50,
+    },
+    closeIcon:{ width: 28, height: 28, alignSelf: "center" },
+    topContainer:{flexDirection:'row',width:'100%',justifyContent:'space-evenly',alignItems:'center'},
+    topIcons:{width:52,height:52},
+    currentDayText:{
+      color: "white",
+      fontSize: 42,
+      fontWeight: "bold",
+    },
+    currentDayIcon:{ width: 100, height: 100, marginTop: 8 },
+    currentDegreeText:{ color: "white", fontSize: 52, marginTop: 8 },
+    minMaxContainer:{ flexDirection: "row", marginTop: 8 },
+    minText:{
+      color: "white",
+      fontSize: 32,
+      fontWeight: "600",
+      paddingHorizontal: 44,
+    },
+    bottomContainer:{
+      backgroundColor: "white",
+      width: "90%",
+      borderRadius: 20,
+      marginBottom:32
+ 
+    },
+    nextTempsText:{ marginTop: 4,fontSize:16 }
 });

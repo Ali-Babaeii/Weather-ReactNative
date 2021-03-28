@@ -6,7 +6,6 @@ import {
   FETCH_DATA_ERROR,
 } from "../types";
 
-import AsyncStorage from "@react-native-community/async-storage";
 
 
 export const fetchDataRequest = (data) => {
@@ -22,6 +21,12 @@ export const fetchDataSuccess = (data) => {
     payload: data,
   };
 };
+export const fetchLocationSuccess = (loc) => {
+  return {
+    type: "FETCH_LOCATION_SUCCESS",
+    payload: loc,
+  };
+};
 
 export const fetchDataError = (erros) => {
   return { type: FETCH_DATA_ERROR, payload: erros };
@@ -33,21 +38,19 @@ export const setFalse = () => {
   };
 };
 
-export const setTrue = () => {
+export const setTrue = (day) => {
   return {
     type: SETTRUE,
+    payload:day
   };
 };
 
 
 
-export const fetchData = (lat, lng,userAge) => {
+export const fetchData = (lat, lng) => {
   return async (dispatch) => {
-    if (lat == null && lng == null) {
-      lat = "35.832622";
-      lng = "50.948702";
-    }
-    dispatch(fetchDataRequest(userAge));
+
+    dispatch(fetchDataRequest());
     try {
       const response = await fetch(
         
@@ -59,17 +62,43 @@ export const fetchData = (lat, lng,userAge) => {
           
       );
       const json = await response.json();
-      // console.log(lat+"   "+lng);
-      await AsyncStorage.setItem("STORAGE_KEY",JSON.stringify(json))
+
 
       dispatch(fetchDataSuccess(json));
-      console.log("data recieved")
+
     } catch (error) {
       dispatch(fetchDataError(error));
     }
   };
 };
 
+export const fetchLocation=(lat,lon)=>{
+
+    return async (dispatch) => {
+
+      // dispatch(fetchLocationRequest());
+      try {
+        const response = await fetch(
+          "https://maps.googleapis.com/maps/api/geocode/json?address=" +
+     lat +
+      "," +
+      lon +
+      "&key=" +
+      "AIzaSyAUoB_3Q7D9ZAg_astS-Gr9aW9wEONJkSs"
+            
+        );
+        const json = await response.json();
+      
+  
+        let location = JSON.stringify(
+          json.results[0].address_components[2].long_name
+        )
+        dispatch(fetchLocationSuccess(JSON.parse(location)));
+
+      } catch (error) {
+        // dispatch(fetchLocationError(error));
+      }
+    };
+};
+
 // https://api.mocki.io/v1/b043df5a
-// await AsyncStorage.setItem("STORAGE_KEY",JSON.stringify(json))
-// const userAge = await AsyncStorage.getItem("STORAGE_KEY")

@@ -10,7 +10,9 @@ const intialState = {
   modalStatus: false,
   data: [],
   error: "",
-  isLoading:false
+  isLoading:false,
+  location:"",
+  currentDay:""
 };
 
 const modalStatusReducer = (state = intialState, action) => {
@@ -18,7 +20,7 @@ const modalStatusReducer = (state = intialState, action) => {
     case SETFALSE:
       return { ...state, modalStatus: (state.modalStatus = false) };
     case SETTRUE:
-      return { ...state, modalStatus: (state.modalStatus = true) };
+      return { ...state, modalStatus: (state.modalStatus = true),currentDay:action.payload};
     default:
       return state;
   }
@@ -27,7 +29,7 @@ const modalStatusReducer = (state = intialState, action) => {
 const fetchDataReducer = (state = intialState, action) => {
   switch (action.type) {
     case FETCH_DATA_REQUEST: {
-      return { ...state,  data: action.payload,isLoading:false };
+      return { ...state,isLoading:true };
     }
     case FETCH_DATA_SUCCESS: {
       return { ...state, data: action.payload,isLoading:false };
@@ -40,4 +42,15 @@ const fetchDataReducer = (state = intialState, action) => {
   return state;
 };
 
-export { modalStatusReducer, fetchDataReducer };
+const fetchLocationReducer = (state = intialState, action) => {
+  switch (action.type) {
+ 
+    case "FETCH_LOCATION_SUCCESS": {
+      return { ...state, location: action.payload,isLoading:false};
+    }
+
+  }
+
+  return state;
+};
+export { modalStatusReducer, fetchDataReducer,fetchLocationReducer };

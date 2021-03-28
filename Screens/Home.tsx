@@ -5,25 +5,21 @@ import {
   Image,
   Dimensions,
   StyleSheet,
-  TouchableOpacity,
   TouchableWithoutFeedback,
-  ImageBackground,
   Modal,
   Keyboard,
   Pressable,
-  ScrollView,
-  ActivityIndicator,
-  Alert,
 } from "react-native";
+import ErrorConnection from "../components/ErrorConnection/index.js";
+import { Ionicons } from "@expo/vector-icons";
 import { Card, CardItem, Item } from "native-base";
 import Carousel, { Pagination } from "react-native-snap-carousel";
 import PlacesInput from "react-native-places-input";
 import { useNavigation } from "@react-navigation/native";
 import Details from "../Screens/Details";
 import { useSelector, useDispatch } from "react-redux";
-import { setTrue, fetchData } from "../redux/actions";
+import { setTrue, fetchData, fetchLocation } from "../redux/actions";
 import { colors } from "../constants/Theme";
-import {SetIcon} from '../components/SetIcon/index.js'
 const clearDay = require("../assets/images/clearDay.png");
 const clearNight = require("../assets/images/clearNight.png");
 const fewCloudDay = require("../assets/images/fewCloudDay.png");
@@ -36,9 +32,10 @@ const thunderstorm = require("../assets/images/thunderstorm.png");
 const snow = require("../assets/images/snow.png");
 const mist = require("../assets/images/mist.png");
 const cloud = require("../assets/images/cloud.png");
-const menu = require("../assets/images/menu.png");
-const sunLogo = require("../assets/images/sunLogo.png");
-const error = require("../assets/images/error.png");
+const location = require("../assets/images/location.png");
+const man = require("../assets/images/man.png");
+
+// const error = require("../assets/images/error.png");
 
 const width = Dimensions.get("window").width;
 
@@ -52,6 +49,7 @@ const mycolor = [
   "#FF1313",
   "#0051FF",
   "#FF0090",
+  "#FFAE00",
 ];
 
 var dayNames = [
@@ -69,9 +67,12 @@ export default function HomeScreen() {
   );
   const isLoading = useSelector((state) => state.fetchDataReducer.isLoading);
   const data = useSelector((state) => state.fetchDataReducer.data);
-  const [firstItem, setFirstItem] = useState("metric");
+  const getLocation = useSelector(
+    (state) => state.fetchLocationReducer.location
+  );
+
+  const [locName, setLocName] = useState("");
   const dispatch = useDispatch();
-  const navigation = useNavigation();
 
   const currentConditions = data.current;
   const nextDays = data.daily.map((item) =>
@@ -84,31 +85,10 @@ export default function HomeScreen() {
   const weatherIcon = data.daily.map((item) => item.weather[0].icon);
 
   const convertToWeekday = (getDate) => {
-    var d = new Date(getDate);
-    var dayName = dayNames[d.getDay()];
+    var date = new Date(getDate);
+    var dayName = dayNames[date.getDay()];
     return dayName;
   };
-
-  useEffect(() => {
-    // fetch('https://maps.googleapis.com/maps/api/geocode/json?address=' + 35.832622 + ',' + 50.948702 + '&key=' + 'AIzaSyAUoB_3Q7D9ZAg_astS-Gr9aW9wEONJkSs')
-    //     .then((response) => response.json())
-    //     .then((responseJson) => {
-    //         console.log('ADDRESS GEOCODE is BACK!! => ' + JSON.stringify(responseJson.results[0].address_components[1]));
-// })
-    // console.log(nextDays);
-    // console.log(currentConditions.weather[0].icon)
-    // fetch("https://api.mocki.io/v1/b043df5a")
-    //   .then((response) => response.json())
-    //   .then((responseJson) => {
-    //     // console.log(responseJson.current.weather[0].description);
-    //     setIsLoading(true);
-    //     console.log(fetchData)
-    //   })
-    //   .catch((error) => {
-    //     console.error(error);
-    //     setIsLoading(false);
-    //   });
-  }, []);
 
   const setIcon = (iconAddress) => {
     switch (iconAddress) {
@@ -149,27 +129,17 @@ export default function HomeScreen() {
     return Math.round(Num);
   };
 
-  const _checkConnection = () => {
-    if (isLoading == true) {
-      navigation.navigate("HomeScreen");
-    }
-  };
-
   const _renderItem = ({ index }) => {
-   
-    
     return (
       <View>
         <Card style={styles.cardContainer}>
           <CardItem cardBody>
-            <TouchableWithoutFeedback
-              onPress={() => console.log(convertToWeekday(nextDays[index]))}
-            >
+            <TouchableWithoutFeedback>
               <View
                 style={{
                   backgroundColor: mycolor[index],
                   width: width / 1,
-                  height: 166,
+                  height: 186,
                   flex: 1,
                   alignItems: "center",
                   justifyContent: "space-around",
@@ -179,7 +149,10 @@ export default function HomeScreen() {
                   {convertToWeekday(nextDays[index])}
                 </Text>
 
-                <Image style={styles.nextDaysIcon} source={setIcon(weatherIcon[index])} />
+                <Image
+                  style={styles.nextDaysIcon}
+                  source={setIcon(weatherIcon[index])}
+                />
 
                 <Text style={styles.nextDaysDegree}>
                   {mathRound(nextTemps[index])}&#xb0;
@@ -202,179 +175,88 @@ export default function HomeScreen() {
     );
   };
 
-  const styles = StyleSheet.create({
-    placesInputContainer: { marginTop: 24, flex: 1, zIndex: 1 },
-    placeInput: {
-      color: colors.primary,
-      height: 40,
-      fontWeight: "500",
-      textAlign: "center",
-      borderColor: "gray",
-      borderRadius: 12,
-      borderWidth: 0.5,
-      backgroundColor: colors.white,
-    },
-    dotContainerStyle: {
-      position: "absolute",
-      marginHorizontal: 0,
-      marginVertical: 0,
-      justifyContent: "center",
-      alignSelf: "center",
-    },
-    dotStyle: {
-      width: 12,
-      height: 12,
-      borderRadius: 22,
-      marginHorizontal: 0.2,
-      backgroundColor: "#E7E4FF",
-    },
- 
-    currentWeatherContainer: {
-      marginTop: 30,
-      alignItems: "center",
-    },
-    imageBackgroundContainer: {
-      width: width,
-      height: 250,
-      marginTop: 40,
-      alignItems: "center",
-      justifyContent: "center",
-    },
-    currentDegreeText: { color: "white", fontSize: 82 },
-    currentWeatherText: { color: "white", fontSize: 20 },
-    humidityText: {
-      color: "white",
-      fontSize: 18,
-      fontWeight: "bold",
-      marginTop: 16,
-    },
-    humidityDegreeText: {
-      color: "white",
-      fontSize: 16,
-      fontWeight: "bold",
-      marginTop: 6,
-    },
-    currentWeatherIcon: {
-      width: 72,
-      height: 72,
-      position: "absolute",
-      bottom: 14,
-      right: 30,
-    },
-    nextDaysTitle: {
-      fontSize: 16,
-      color: colors.primary,
-      alignSelf: "flex-start",
-      marginLeft: 12,
-      marginTop: 14,
-      fontWeight: "500",
-    },
-    cardContainer: {
-      overflow: "hidden",
-      borderRadius: 10,
-      marginLeft: 10,
-      marginTop: 10,
-      marginBottom: 10,
-    },
-
-    nextDaysText: {
-      fontSize: 16,
-      fontWeight: "bold",
-      color: "white",
-    },
-    nextDaysIcon: { height: 42, width: 42 },
-    nextDaysDegree: {
-      fontSize: 36,
-      color: "white",
-    },
-    minimumDegreeText: {
-      fontSize: 16,
-      paddingHorizontal: 12,
-      fontWeight: "bold",
-      color: "white",
-    },
-    maximomDegreeText: {
-      fontSize: 16,
-      fontWeight: "bold",
-      paddingHorizontal: 12,
-      color: "white",
-    },
-    cardImage: { position: "absolute", bottom: -20 },
-    errorConnection: {
-      justifyContent: "center",
-      alignItems: "center",
-      flex: 1,
-      paddingHorizontal: 12,
-    },
-  });
-
   if (isLoading == true) {
-    return (
-      <View style={{justifyContent:'center',alignItems:'center',flex:1,backgroundColor:colors.secondary}}>
-         <ActivityIndicator style={{alignSelf:'center'}} size="large" color={colors.white}/> 
-<Text style={{color:colors.white,fontSize:16,fontWeight:'500',marginTop:14}}>please Wait...</Text>
-<Image style={{width:120,height:120,top:0,position:'absolute',alignSelf:'center'}} source={sunLogo}></Image>
-      </View>
-    );
+    return <ErrorConnection></ErrorConnection>;
   }
   return (
-    <View>
+    <View style={styles.mainContainer}>
       <Modal animationType="slide" transparent={true} visible={modalVisible}>
         <Details />
       </Modal>
-      <View style={styles.placesInputContainer}>
-        <PlacesInput
-          backgroundColor={"green"}
-          googleApiKey={"AIzaSyAUoB_3Q7D9ZAg_astS-Gr9aW9wEONJkSs"}
-          placeHolder={data.timezone}
-          language={"en-US"}
-          onSelect={(place) => (
+
+      <PlacesInput
+        googleApiKey={"AIzaSyAUoB_3Q7D9ZAg_astS-Gr9aW9wEONJkSs"}
+        placeHolder={"Search Location"}
+        language={"en-US"}
+        onSelect={(place) => {
+          dispatch(
+            fetchData(
+              place.result.geometry.location.lat,
+              place.result.geometry.location.lng
+            ),
             dispatch(
-              fetchData(
+              fetchLocation(
                 place.result.geometry.location.lat,
                 place.result.geometry.location.lng
               )
-            ),
-            Keyboard.dismiss()
-          )}
-          // onSelect={place => {
-          //     this.props.goToPoint(get(place, 'result.geometry.location.lat'), get(place, 'result.geometry.location.lng'))
-          // }}
-          // iconResult={<Ionicons name="md-pin" size={25} style={styles.placeIcon}/>}
-          stylesContainer={{ shadowColor: colors.white }}
-          stylesInput={styles.placeInput}
-          stylesItemText={{ color: colors.primary }}
-        />
-      </View>
+            )
+          ),
+            Keyboard.dismiss();
+          setLocName(place.result.name);
+        }}
+        iconResult={
+          <Ionicons
+            name="md-pin"
+            size={25}
+            color={colors.secondary}
+            style={styles.placeIcon}
+          />
+        }
+        stylesContainer={{ shadowColor: colors.white }}
+        stylesInput={styles.placeInput}
+        stylesItemText={{ color: colors.primary }}
+      />
 
       <View style={styles.currentWeatherContainer}>
         <Pressable
-          onPress={
-            () => dispatch(setTrue())
-            // console.log(data.daily.map((item)=>item.temp.day))
-          }
+          style={styles.pressableContainer}
+          onPress={() => dispatch(setTrue(convertToWeekday(nextDays[0])))}
         >
-          <ImageBackground
-            style={styles.imageBackgroundContainer}
-            resizeMode={"contain"}
-            source={menu}
-          >
-            <Text style={styles.currentDegreeText}>
-              {mathRound(currentConditions.temp)}&#xb0;
-            </Text>
-            <Text style={styles.currentWeatherText}>
-              {currentConditions.weather[0].description}
-            </Text>
-            <Text style={styles.humidityText}>Humidity</Text>
-            <Text style={styles.humidityDegreeText}>
-              {mathRound(currentConditions.humidity)}
-            </Text>
-            <Image style={styles.currentWeatherIcon} source={setIcon(currentConditions.weather[0].icon)}></Image>
-          </ImageBackground>
+          <Text style={styles.currentDegreeText}>
+            {mathRound(currentConditions.temp)}&#xb0;
+          </Text>
+          <Text style={styles.currentWeatherText}>
+            {currentConditions.weather[0].description}
+          </Text>
+          <Text style={styles.humidityText}>Humidity</Text>
+          <Text style={styles.humidityDegreeText}>
+            {mathRound(currentConditions.humidity)}
+          </Text>
+          <View style={styles.PressableBottomContainer}>
+            <View style={styles.locationContainer}>
+              <Image style={styles.locationIconStyle} source={location}></Image>
+              <Text style={styles.locationText}>{getLocation}</Text>
+            </View>
+            <Text></Text>
+            <Image
+              style={{ width: 82, height: 82 }}
+              source={setIcon(currentConditions.weather[0].icon)}
+            ></Image>
+          </View>
         </Pressable>
-        <Text style={styles.nextDaysTitle}>Next 7 days</Text>
+      </View>
+
+      <View>
+        <View style={styles.next7DaysContainer}>
+          <Text style={styles.nextDaysTitle}>Next 7 days</Text>
+          <Image
+            style={{ width: 50, height: 50 }}
+            resizeMode={"contain"}
+            source={man}
+          ></Image>
+        </View>
         <Carousel
-          data={dayNames}
+          data={nextDays}
           renderItem={_renderItem}
           sliderWidth={width * 1}
           itemWidth={width / 2.3}
@@ -383,9 +265,130 @@ export default function HomeScreen() {
           activeSlideAlignment="start"
           firstItem={0}
           useScrollView={false}
-          onSnapToItem={(index) => setFirstItem(index)}
+          onSnapToItem={(index) => {
+            1;
+          }}
         ></Carousel>
       </View>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  mainContainer: { flex: 1, marginTop: 12, backgroundColor: "white" },
+  placesInputContainer: { marginTop: 24, flex: 1, zIndex: 1 },
+  placeInput: {
+    color: colors.primary,
+    height: 40,
+    fontWeight: "500",
+    textAlign: "center",
+    borderColor: "gray",
+    borderRadius: 12,
+    borderWidth: 0.5,
+    backgroundColor: colors.white,
+  },
+
+  currentWeatherContainer: {
+    flex: 1,
+    justifyContent: "center",
+    marginTop: 60,
+  },
+  imageBackgroundContainer: {
+    width: width,
+    height: 250,
+    marginTop: 40,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  currentDegreeText: { color: "white", fontSize: 88 },
+  currentWeatherText: { color: "white", fontSize: 30 },
+  humidityText: {
+    color: "white",
+    fontSize: 18,
+    fontWeight: "bold",
+    marginTop: 16,
+  },
+  humidityDegreeText: {
+    color: "white",
+    fontSize: 20,
+    fontWeight: "bold",
+    marginTop: 10,
+  },
+  currentWeatherIcon: {
+    width: 82,
+    height: 82,
+    // position: "absolute",
+    alignSelf: "flex-end",
+    marginRight: 22,
+    bottom: 4,
+  },
+  nextDaysTitle: {
+    fontSize: 16,
+    color: colors.primary,
+    // alignSelf: "flex-start",
+    // marginLeft: 12,
+    // marginTop: 14,
+    fontWeight: "500",
+  },
+  cardContainer: {
+    overflow: "hidden",
+    borderRadius: 10,
+    marginLeft: 10,
+    marginTop: 10,
+    marginBottom: 10,
+  },
+
+  nextDaysText: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "white",
+  },
+  nextDaysIcon: { height: 50, width: 50 },
+  nextDaysDegree: {
+    fontSize: 36,
+    color: "white",
+  },
+  minimumDegreeText: {
+    fontSize: 16,
+    paddingHorizontal: 12,
+    fontWeight: "bold",
+    color: "white",
+  },
+  maximomDegreeText: {
+    fontSize: 16,
+    fontWeight: "bold",
+    paddingHorizontal: 12,
+    color: "white",
+  },
+  cardImage: { position: "absolute", bottom: -20 },
+  errorConnection: {
+    justifyContent: "center",
+    alignItems: "center",
+    flex: 1,
+    paddingHorizontal: 12,
+  },
+  placeIcon: { position: "absolute", top: 10, right: 12 },
+  pressableContainer: {
+    backgroundColor: colors.secondary,
+    flex: 1,
+    margin: 12,
+    borderRadius: 40,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  PressableBottomContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    width: "100%",
+    justifyContent: "space-between",
+    paddingHorizontal: 18,
+  },
+  next7DaysContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginLeft: 14,
+  },
+  locationText: { color: colors.white, fontSize: 20, fontWeight: "500" },
+  locationIconStyle: { width: 30, height: 30, marginRight: 4 },
+  locationContainer: { flexDirection: "row", alignItems: "center" },
+});
