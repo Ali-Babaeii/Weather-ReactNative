@@ -3,6 +3,10 @@ This is react-native base application which fetch weather using open weather api
 
 Need Expo to run this app.
 
+# Features
+- Search for favorite cities
+- Daily forecast for 7 days
+- Hourly forecast for 48 hours
 
 # Contact
 - [LinkedIn](https://www.linkedin.com/in/ali-babaei-709684167)
