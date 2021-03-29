@@ -3,6 +3,14 @@ This is react-native base application which fetch weather using open weather api
 
 Need Expo to run this app.
 
+<img src = "https://github.com/ali-babaei69/Weather/blob/master/Screenshots/1.jpg" width ="220" /> <img src = "https://github.com/ali-babaei69/Weather/blob/master/Screenshots/3.jpg" width ="220"/> <img src = "https://github.com/ali-babaei69/Weather/blob/master/Screenshots/5.jpg" width ="220" /> 
+
+<img src = "https://github.com/ali-babaei69/Weather/blob/master/Screenshots/2.jpg" width ="220"/> <img src = "https://github.com/ali-babaei69/Weather/blob/master/Screenshots/4.jpg" width ="220"/> 
+
+
+
+
+
 # Features
 - Search for favorite cities
 - Daily forecast for 7 days
@@ -20,4 +28,5 @@ Need Expo to run this app.
 # Contact
 - [LinkedIn](https://www.linkedin.com/in/ali-babaei-709684167)
 
-- [E-mail](mailto:ali.babaei69@yahoo.com)
+- [Email](mailto:ali.babaei69@yahoo.com)
+ 
