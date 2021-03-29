@@ -185,7 +185,7 @@ export default function HomeScreen() {
       </Modal>
 
       <PlacesInput
-        googleApiKey={"AIzaSyAUoB_3Q7D9ZAg_astS-Gr9aW9wEONJkSs"}
+        googleApiKey={"API Key"}
         placeHolder={"Search Location"}
         language={"en-US"}
         onSelect={(place) => {
