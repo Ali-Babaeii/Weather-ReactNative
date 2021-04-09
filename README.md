@@ -1,5 +1,5 @@
 # Weather App-React Native
-This is react-native base application which fetch weather using open weather api. This application was build or learning purpose.
+This is React Native base application which show weather conditions using open weather API. This application was build or learning purpose.
 
 Need Expo to run this app.
 
