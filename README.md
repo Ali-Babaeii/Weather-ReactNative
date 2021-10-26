@@ -1,4 +1,4 @@
-# Weather App-React Native
+# Weather App - React Native
 This is React Native base application which show weather conditions using open weather API.
 
 Need Expo to run this app.
